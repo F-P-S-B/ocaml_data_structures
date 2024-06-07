@@ -25,11 +25,11 @@ val get : 'a t -> int -> 'a option
 (** `set v n e` sets the nth element of v to e if `0 <= n < length v` if it is in bound, and returns the element that got replaced, or None if the precondition isn't fulfilled *)
 val set : 'a t -> int -> 'a -> 'a option
 
-(** `from_array a` creates a vector with the same elements as a without consuming a  *)
-val from_array : 'a array -> 'a t
+(** `of_array a` creates a vector with the same elements as a without consuming a  *)
+val of_array : 'a array -> 'a t
 
-(** Same as from_array except that the array passed is consumed and should not be used later. Each element must be constructed with Some (gives access to Array.make/.create for free ) *)
-val from_array_inplace : 'a option array -> 'a t
+(** Same as of_array except that the array passed is consumed and should not be used later. Each element must be constructed with Some (gives access to Array.make/.create for free ) *)
+val of_array_inplace : 'a option array -> 'a t
 
 (** Transforms a vector into a list  *)
 val to_list : 'a t -> 'a list

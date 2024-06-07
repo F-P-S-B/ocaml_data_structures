@@ -79,11 +79,11 @@ let set (v : 'a t) (i : int) (new_val : 'a) : 'a option =
       old_val
 
 
-let from_array (arr : 'a array) : 'a t =
+let of_array (arr : 'a array) : 'a t =
     { array = Array.map (fun e -> Some e) arr; size = Array.length arr }
 
 
-let from_array_inplace (arr : 'a option array) : 'a t =
+let of_array_inplace (arr : 'a option array) : 'a t =
     { array = arr; size = Array.length arr }
 
 
@@ -97,7 +97,7 @@ let to_list (v : 'a t) : 'a list =
 
 
 let of_list (l : 'a list) : 'a t =
-    l |> List.map (fun e -> Some e) |> Array.of_list |> from_array_inplace
+    l |> List.map (fun e -> Some e) |> Array.of_list |> of_array_inplace
 
 
 let map (f : 'a -> 'b) (v : 'a t) : 'b t =

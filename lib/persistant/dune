@@ -1,0 +1,6 @@
+(include_subdirs unqualified)
+
+(library
+ (name persistant)
+ (modules priority_queue trie rope parray)
+ (libraries option_monad))
