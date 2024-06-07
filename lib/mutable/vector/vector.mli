@@ -17,7 +17,7 @@ val pop : 'a t -> 'a option
 val is_empty : 'a t -> bool
 
 (** Takes a vector and returns the number of elements it contains *)
-val length : 'a t -> int
+val size : 'a t -> int
 
 (** `get v n` returns the nth element of v if `0 <= n < length v` and None otherwise  *)
 val get : 'a t -> int -> 'a option

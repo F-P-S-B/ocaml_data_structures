@@ -28,7 +28,7 @@ let equals (v1 : 'a t) (v2 : 'a t) : bool =
 
 
 let empty () : 'a t = { array = Array.make 16 None; size = 0 }
-let length (v : 'a t) : int = v.size
+let size (v : 'a t) : int = v.size
 let is_empty (v : 'a t) : bool = v.size = 0
 
 let resize (v : 'a t) : unit =

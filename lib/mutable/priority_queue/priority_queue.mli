@@ -10,8 +10,8 @@ module type S = sig
 
   val empty : unit -> t
   val is_empty : t -> bool
-  val add : t -> unit
   val size : t -> int
+  val add : elt -> t -> unit
   val read_min : t -> elt option
   val remove_min : t -> elt option
 end
