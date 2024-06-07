@@ -1,0 +1,3 @@
+(library
+ (name priority_queue)
+ (libraries option_monad vector))
