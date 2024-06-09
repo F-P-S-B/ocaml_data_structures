@@ -40,7 +40,7 @@ let push_front (e : 'a) (deq : 'a t) : unit =
       deq.last <- Some new_node
 
 
-let rec pop_front (deq : 'a t) : 'a option =
+let pop_front (deq : 'a t) : 'a option =
     if is_empty deq
     then fail
     else begin

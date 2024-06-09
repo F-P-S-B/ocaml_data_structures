@@ -82,7 +82,7 @@ let of_array_inplace (arr : 'a option array) : 'a t =
 let to_list (v : 'a t) : 'a list =
     let res = ref [] in
     for i = v.size - 1 downto 0 do
-      let e = Option.get v.array.(i) "to_list" in
+      let e = Option.get v.array.(i) in
       res := e :: !res
     done;
     v.array |> Array.to_list |> List.filter_map Fun.id
