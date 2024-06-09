@@ -2,5 +2,5 @@
 
 (library
  (name mutable)
- (modules vector priority_queue union_find)
+ (modules vector priority_queue union_find deque)
  (libraries option_monad))

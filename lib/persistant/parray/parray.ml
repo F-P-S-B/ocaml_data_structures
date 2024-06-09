@@ -1,3 +1,5 @@
+open Option_monad
+
 type 'a t = 'a data ref
 
 and 'a data =
@@ -26,11 +28,11 @@ let rec get a i =
     match !a with
     | Diff (ind, v, _) when ind = i ->
         ignore @@ reroot a;
-        v
+        return v
     | Diff (_, _, a) ->
         ignore @@ reroot a;
         get a i
-    | Arr a -> a.(i)
+    | Arr a -> ( try return a.(i) with Invalid_argument _ -> fail)
 
 
 let set a i v =

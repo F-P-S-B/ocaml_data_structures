@@ -2,5 +2,5 @@
 
 (library
  (name persistant)
- (modules priority_queue trie rope parray)
+ (modules priority_queue trie rope parray queue deque)
  (libraries option_monad))
