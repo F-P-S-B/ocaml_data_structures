@@ -39,39 +39,6 @@ let collect : t -> string list =
     aux []
 
 
-let to_string (r : t) : string = r |> collect |> String.concat ""
-
-let rec get (r : t) (i : int) : char option =
-    match r with
-    | Str s -> ( try return s.[i] with Invalid_argument _ -> fail)
-    | Node { size; _ } when i >= size -> fail
-    | Node { left; _ } when i < length left -> get left i
-    | Node { right; left; _ } -> get right (i - length left)
-
-
-let rec sub (r : t) (pos : int) (len : int) : t option =
-    match r with
-    | Str s -> (
-        try return @@ Str (String.sub s pos len)
-        with Invalid_argument _ -> fail)
-    | Node { size; _ } when pos + len > size -> fail
-    | Node { left; _ } when pos + len <= length left -> sub left pos len
-    | Node { left; right; _ } when pos >= length left ->
-        sub right (pos - length left) len
-    | Node { left; right; _ } ->
-        let len_left = length left - pos in
-        let len_right = len - len_left in
-        let* new_left = sub left pos len_left in
-        let* new_right = sub right 0 len_right in
-        return @@ concat new_left new_right
-
-
-let insert (r : t) (s : string) (pos : int) =
-    let* left = sub r 0 pos in
-    let* right = sub r pos (length r - pos) in
-    return @@ concat left (concat (Str s) right)
-
-
 let fib_array =
     let a = Array.make 80 0 in
     a.(1) <- 1;
@@ -103,3 +70,36 @@ let balance (r : t) : t =
     else
       let strs = Array.of_list @@ collect r in
       run @@ merge strs 0 (Array.length strs)
+
+
+let to_string (r : t) : string = r |> collect |> String.concat ""
+
+let rec get (r : t) (i : int) : char option =
+    match r with
+    | Str s -> ( try return s.[i] with Invalid_argument _ -> fail)
+    | Node { size; _ } when i >= size -> fail
+    | Node { left; _ } when i < length left -> get left i
+    | Node { right; left; _ } -> get right (i - length left)
+
+
+let rec sub (r : t) (pos : int) (len : int) : t option =
+    match r with
+    | Str s -> (
+        try return @@ Str (String.sub s pos len)
+        with Invalid_argument _ -> fail)
+    | Node { size; _ } when pos + len > size -> fail
+    | Node { left; _ } when pos + len <= length left -> sub left pos len
+    | Node { left; right; _ } when pos >= length left ->
+        sub right (pos - length left) len
+    | Node { left; right; _ } ->
+        let len_left = length left - pos in
+        let len_right = len - len_left in
+        let* new_left = sub left pos len_left in
+        let* new_right = sub right 0 len_right in
+        return @@ concat new_left new_right
+
+
+let insert (r : t) (s : string) (pos : int) =
+    let* left = sub r 0 pos in
+    let* right = sub r pos (length r - pos) in
+    return @@ balance @@ concat left (concat (Str s) right)

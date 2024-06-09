@@ -22,7 +22,7 @@ val size : 'a t -> int
 (** `get v n` returns the nth element of v if `0 <= n < length v` and None otherwise  *)
 val get : 'a t -> int -> 'a option
 
-(** `set v n e` sets the nth element of v to e if `0 <= n < length v` if it is in bound, and returns the element that got replaced, or None if the precondition isn't fulfilled *)
+(** `set v n e` sets the nth element of v to e if `0 <= n < length v`, and returns the element that got replaced, or None if the precondition isn't fulfilled *)
 val set : 'a t -> int -> 'a -> 'a option
 
 (** `of_array a` creates a vector with the same elements as a without consuming a  *)

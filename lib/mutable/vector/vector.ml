@@ -1,17 +1,9 @@
 open Option_monad
 
-exception Invariant_Not_Respected of string
-
 type 'a t = {
     mutable array : 'a option Array.t;
     mutable size : int;
   }
-
-let extract_opt (value : 'a option) (func_name : string) : 'a =
-    match value with
-    | Some v -> v
-    | None -> raise @@ Invariant_Not_Respected func_name
-
 
 let equals (v1 : 'a t) (v2 : 'a t) : bool =
     let exception Neq in
@@ -59,24 +51,24 @@ let push (v : 'a t) (element : 'a) : int =
 let pop (v : 'a t) : 'a option =
     resize v;
     if v.size = 0
-    then None
+    then fail
     else begin
       v.size <- v.size - 1;
-      Some (extract_opt v.array.(v.size + 1) "pop")
+      return @@ Option.get v.array.(v.size + 1)
     end
 
 
 let get (v : 'a t) (i : int) : 'a option =
-    if i < 0 || i >= v.size then None else Some (extract_opt v.array.(i) "get")
+    if i < 0 || i >= v.size then fail else return @@ Option.get v.array.(i)
 
 
 let set (v : 'a t) (i : int) (new_val : 'a) : 'a option =
     if i < 0 || i >= v.size
-    then None
+    then fail
     else
-      let old_val = Some (extract_opt v.array.(i) "set") in
+      let old_val = Option.get v.array.(i) in
       v.array.(i) <- Some new_val;
-      old_val
+      return old_val
 
 
 let of_array (arr : 'a array) : 'a t =
@@ -90,7 +82,7 @@ let of_array_inplace (arr : 'a option array) : 'a t =
 let to_list (v : 'a t) : 'a list =
     let res = ref [] in
     for i = v.size - 1 downto 0 do
-      let e = extract_opt v.array.(i) "to_list" in
+      let e = Option.get v.array.(i) "to_list" in
       res := e :: !res
     done;
     v.array |> Array.to_list |> List.filter_map Fun.id
@@ -103,7 +95,7 @@ let of_list (l : 'a list) : 'a t =
 let map (f : 'a -> 'b) (v : 'a t) : 'b t =
     let new_arr = Array.make (Array.length v.array) None in
     for i = 0 to v.size - 1 do
-      let e = extract_opt v.array.(i) "map" in
+      let e = Option.get v.array.(i) in
       new_arr.(i) <- return @@ f e
     done;
     { array = new_arr; size = v.size }
@@ -111,14 +103,14 @@ let map (f : 'a -> 'b) (v : 'a t) : 'b t =
 
 let map_inplace (f : 'a -> 'a) (v : 'a t) : unit =
     for i = 0 to v.size - 1 do
-      v.array.(i) <- return @@ f @@ extract_opt v.array.(i) "map_inplace"
+      v.array.(i) <- return @@ f @@ Option.get v.array.(i)
     done
 
 
 let mapi (f : int -> 'a -> 'b) (v : 'a t) : 'b t =
     let new_arr = Array.make (Array.length v.array) None in
     for i = 0 to v.size - 1 do
-      let e = extract_opt v.array.(i) "map" in
+      let e = Option.get v.array.(i) in
       new_arr.(i) <- return @@ f i e
     done;
     { array = new_arr; size = v.size }
@@ -126,7 +118,7 @@ let mapi (f : int -> 'a -> 'b) (v : 'a t) : 'b t =
 
 let mapi_inplace (f : int -> 'a -> 'a) (v : 'a t) : unit =
     for i = 0 to v.size - 1 do
-      let e = extract_opt v.array.(i) "map_inplace" in
+      let e = Option.get v.array.(i) in
       v.array.(i) <- return @@ f i e
     done
 
@@ -134,7 +126,7 @@ let mapi_inplace (f : int -> 'a -> 'a) (v : 'a t) : unit =
 let fold_left (f : 'acc -> 'a -> 'acc) (default : 'acc) (v : 'a t) : 'acc =
     let acc = ref default in
     for i = 0 to v.size - 1 do
-      let e = extract_opt v.array.(i) "fold_left" in
+      let e = Option.get v.array.(i) in
       acc := f !acc e
     done;
     !acc
